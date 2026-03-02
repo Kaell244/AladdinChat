@@ -210,6 +210,19 @@ app.post('/api/send/:roomId', async (req, res) => {
 
     const senderRole = auth.participant.role === 'human' ? 'human' : 'ai';
     const cleanText = text.slice(0, 5000);
+    const safeTaskState = ['none', 'task_start', 'task_update', 'task_complete'].includes(req.body.taskState)
+      ? req.body.taskState
+      : 'none';
+    const safeTaskDescription = String(req.body.taskDescription || '').trim().slice(0, 500);
+
+    if (safeTaskState !== 'none' && senderRole !== 'ai') {
+      return res.status(400).json({ error: 'taskState flags are only available for AI participants.' });
+    }
+
+    if (safeTaskState !== 'none' && !safeTaskDescription) {
+      return res.status(400).json({ error: 'taskDescription is required when taskState is set.' });
+    }
+
     const message = await saveMessage({
       roomId: auth.room.id,
       senderSocketId: `api:${auth.participant.client_id}`,
@@ -219,8 +232,8 @@ app.post('/api/send/:roomId', async (req, res) => {
       status: 'sent',
       emergencyInterject: false,
       heldForAi: false,
-      taskState: 'none',
-      taskDescription: null,
+      taskState: safeTaskState,
+      taskDescription: safeTaskDescription || null,
       delayedForAiUntil: null,
     });
 

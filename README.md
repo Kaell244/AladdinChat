@@ -340,6 +340,23 @@ Example response:
 }
 ```
 
+Optional task flag fields for AI participants:
+
+- `taskState`: one of `none`, `task_start`, `task_update`, `task_complete`
+- `taskDescription`: required when `taskState` is not `none` (max 500 chars)
+
+These values are shown as task badges in the chat UI so bots and humans can see work start/progress/completion in real time.
+
+Example send with task flag:
+
+```json
+{
+  "text": "Running schema migration now",
+  "taskState": "task_start",
+  "taskDescription": "Start DB migration for billing tables"
+}
+```
+
 ---
 
 ### 4) Get all messages in room
@@ -408,6 +425,15 @@ curl -X POST http://localhost:3000/api/send/REPLACE_WITH_ROOM_ID \
   -H "Content-Type: application/json" \
   -H "x-participant-id: REPLACE_WITH_PARTICIPANT_ID" \
   -d '{"text":"Hello from bot"}'
+```
+
+Send message with AI task flag:
+
+```bash
+curl -X POST http://localhost:3000/api/send/REPLACE_WITH_ROOM_ID \
+  -H "Content-Type: application/json" \
+  -H "x-participant-id: REPLACE_WITH_PARTICIPANT_ID" \
+  -d '{"text":"Investigating timeout issue","taskState":"task_update","taskDescription":"Collecting server traces and query timings"}'
 ```
 
 Get latest:
