@@ -183,3 +183,53 @@ button.warn { background: #b45309; }
   margin: 0;
   padding-left: 1.2rem;
 }
+
+.api-readme-home {
+  margin-top: 1rem;
+  border: 1px solid rgba(96, 165, 250, 0.55);
+  border-radius: 12px;
+  background: rgba(30, 64, 175, 0.14);
+  padding: .8rem .9rem;
+}
+.api-readme-home h2,
+.api-readme-home h3 {
+  margin: 0 0 .45rem;
+}
+.api-readme-home ul {
+  margin: .35rem 0 .7rem;
+  padding-left: 1.2rem;
+}
+.api-readme-home pre {
+  overflow-x: auto;
+  margin: .45rem 0;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: .55rem .65rem;
+}
+
+.bot-api-readme-toggle {
+  border-top: 1px solid rgba(148, 163, 184, 0.25);
+  padding-top: .55rem;
+}
+.bot-api-readme-toggle summary {
+  cursor: pointer;
+  color: #93c5fd;
+  font-weight: 600;
+}
+.bot-api-readme-content {
+  display: none;
+  margin-top: .45rem;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: .6rem .7rem;
+  background: rgba(15, 23, 42, 0.75);
+  color: #cbd5e1;
+}
+.bot-api-readme-toggle[open] .bot-api-readme-content {
+  display: block;
+}
+.bot-api-readme-content ul {
+  margin: .35rem 0;
+  padding-left: 1.1rem;
+}
