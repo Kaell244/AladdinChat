@@ -82,10 +82,14 @@ button.warn { background: #b45309; }
 }
 .message {
   max-width: 78%;
+  width: fit-content;
+  max-inline-size: min(78%, 100%);
   padding: .55rem .65rem;
   border-radius: 12px;
   background: #1f2937;
   align-self: flex-start;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .message.me { background: #0c4a6e; align-self: flex-end; }
 .message .meta { color: #bfdbfe; font-size: .75rem; display: flex; justify-content: space-between; gap: .4rem; }
@@ -208,28 +212,20 @@ button.warn { background: #b45309; }
   padding: .55rem .65rem;
 }
 
-.bot-api-readme-toggle {
+.bot-api-readme-panel {
   border-top: 1px solid rgba(148, 163, 184, 0.25);
   padding-top: .55rem;
-}
-.bot-api-readme-toggle summary {
-  cursor: pointer;
-  color: #93c5fd;
-  font-weight: 600;
-}
-.bot-api-readme-content {
-  display: none;
-  margin-top: .45rem;
   border: 1px solid #334155;
   border-radius: 10px;
   padding: .6rem .7rem;
   background: rgba(15, 23, 42, 0.75);
   color: #cbd5e1;
 }
-.bot-api-readme-toggle[open] .bot-api-readme-content {
-  display: block;
+.bot-api-readme-panel h3 {
+  margin: 0 0 .45rem;
+  color: #93c5fd;
 }
-.bot-api-readme-content ul {
+.bot-api-readme-panel ul {
   margin: .35rem 0;
   padding-left: 1.1rem;
 }

@@ -162,24 +162,27 @@
           </ol>
         </section>
 
-        <details class="bot-api-readme-toggle">
-          <summary>Bot API Readme</summary>
-          <div class="bot-api-readme-content">
-            <p><strong>Use this when driving Aladdin Chat as a bot over HTTP.</strong></p>
-            <ul>
-              <li>Create: <code>POST /api/create</code> with <code>role</code> and optional <code>roomId</code>/<code>participantId</code>.</li>
-              <li>Join: <code>POST /api/join</code> with <code>roomId</code> + <code>role</code>.</li>
-              <li>Send: <code>POST /api/send/:roomId</code> with <code>text</code> and participant identity.</li>
-              <li>Read new only: <code>GET /api/getLatest/:roomId</code>.</li>
-              <li>Read full history: <code>GET /api/allMessages/:roomId</code>.</li>
-            </ul>
-            <p>
-              For bot task status badges, send <code>taskState</code> (<code>task_start</code>, <code>task_update</code>,
-              <code>task_complete</code>) and <code>taskDescription</code> in <code>/api/send/:roomId</code>. This lets
-              humans and bots see when work starts, progresses, and completes.
-            </p>
-          </div>
-        </details>
+        <section class="bot-api-readme-panel">
+          <h3>Bot API README (always visible in room)</h3>
+          <p><strong>Use this when driving Aladdin Chat as a bot over HTTP so you can recover context if an agent forgets.</strong></p>
+          <ul>
+            <li><strong>Create room:</strong> <code>POST /api/create</code> with <code>role</code> and optional <code>roomId</code>/<code>participantId</code>.</li>
+            <li><strong>Join room:</strong> <code>POST /api/join</code> with <code>roomId</code> + <code>role</code>.</li>
+            <li><strong>Send message:</strong> <code>POST /api/send/:roomId</code> with <code>text</code> and participant identity.</li>
+            <li><strong>Read unseen only:</strong> <code>GET /api/getLatest/:roomId</code> (cursor-based).</li>
+            <li><strong>Read full history:</strong> <code>GET /api/allMessages/:roomId</code>.</li>
+          </ul>
+          <p>
+            For auth on send/read, include participant identity as query param <code>?participantId=...</code> or header
+            <code>x-participant-id: ...</code>. For AI task progress badges, include <code>taskState</code>
+            (<code>task_start</code>, <code>task_update</code>, <code>task_complete</code>) and required
+            <code>taskDescription</code>.
+          </p>
+          <p>
+            API-sent messages are now pushed to live room participants in real time (Socket.IO), including delayed
+            AI-to-AI routing behavior and human interjection windows.
+          </p>
+        </section>
       </section>
     </main>
 

@@ -223,6 +223,11 @@ app.post('/api/send/:roomId', async (req, res) => {
       return res.status(400).json({ error: 'taskDescription is required when taskState is set.' });
     }
 
+    const roles = await getParticipantRoles(auth.room.id);
+    const hasHuman = roles.includes('human');
+    const heldForAi = auth.room.pause_ai && hasHuman && senderRole === 'human';
+    const delayedForAiUntil = senderRole === 'ai' ? new Date(Date.now() + AI_MESSAGE_DELAY_MS).toISOString() : null;
+
     const message = await saveMessage({
       roomId: auth.room.id,
       senderSocketId: `api:${auth.participant.client_id}`,
@@ -231,14 +236,80 @@ app.post('/api/send/:roomId', async (req, res) => {
       body: cleanText,
       status: 'sent',
       emergencyInterject: false,
-      heldForAi: false,
+      heldForAi,
       taskState: safeTaskState,
       taskDescription: safeTaskDescription || null,
-      delayedForAiUntil: null,
+      delayedForAiUntil,
     });
 
-    await markDelivered(message.id);
-    message.status = 'delivered';
+    const roomSockets = io.sockets.adapter.rooms.get(auth.room.room_code) || new Set();
+    const recipients = [...roomSockets]
+      .map((id) => io.sockets.sockets.get(id))
+      .filter(Boolean);
+    const aiRecipients = recipients.filter((recipient) => recipient.data.role === 'ai');
+    const nonAiRecipients = recipients.filter((recipient) => recipient.data.role !== 'ai');
+
+    for (const recipient of nonAiRecipients) {
+      recipient.emit('message-new', message);
+    }
+
+    const shouldSendToAiImmediately = senderRole === 'human' && !heldForAi;
+    if (shouldSendToAiImmediately) {
+      for (const recipient of aiRecipients) {
+        recipient.emit('message-new', message);
+      }
+    }
+
+    if (senderRole === 'ai' && aiRecipients.length > 0) {
+      const state = ensureRoomState(auth.room.room_code);
+      const releaseAt = Date.now() + AI_MESSAGE_DELAY_MS;
+      const pendingEntry = {
+        messageId: message.id,
+        senderSocketId: `api:${auth.participant.client_id}`,
+        releaseAt,
+        createdAt: Date.now(),
+        blocked: false,
+        message,
+        timer: setTimeout(async () => {
+          const currentState = ensureRoomState(auth.room.room_code);
+          currentState.pending = currentState.pending.filter((entry) => entry.messageId !== message.id);
+
+          if (!currentState.interjectActive) {
+            const currentMembers = io.sockets.adapter.rooms.get(auth.room.room_code) || new Set();
+            for (const memberId of currentMembers) {
+              const memberSocket = io.sockets.sockets.get(memberId);
+              if (memberSocket?.data.role === 'ai') {
+                memberSocket.emit('message-new', message);
+              }
+            }
+            await markMessageReleased(message.id);
+            io.to(auth.room.room_code).emit('toast-update', {
+              level: 'info',
+              message: 'AI delay window ended. Message is now delivered to AI participants.',
+            });
+          }
+
+          io.to(auth.room.room_code).emit('pending-delay-update', {
+            pending: currentState.pending.map((entry) => ({ messageId: entry.messageId, releaseAt: entry.releaseAt })),
+          });
+        }, AI_MESSAGE_DELAY_MS),
+      };
+
+      state.pending.push(pendingEntry);
+      io.to(auth.room.room_code).emit('pending-delay-update', {
+        pending: state.pending.map((entry) => ({ messageId: entry.messageId, releaseAt: entry.releaseAt })),
+      });
+      io.to(auth.room.room_code).emit('toast-update', {
+        level: 'info',
+        message: 'Incoming AI message: sent to humans now, AI delivery in 10s unless a human interjects.',
+      });
+    }
+
+    if (roomSockets.size > 0) {
+      await markDelivered(message.id);
+      io.to(auth.room.room_code).emit('message-status', { messageId: message.id, status: 'delivered' });
+      message.status = 'delivered';
+    }
 
     return res.status(201).json({
       roomId: auth.room.room_code,

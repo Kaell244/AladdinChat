@@ -49,6 +49,16 @@ let roleLocked = false;
 let participantId = '';
 let isPrimaryHuman = false;
 
+function scrollMessagesToBottom(force = false) {
+  if (!messagesEl) return;
+  const distanceFromBottom = messagesEl.scrollHeight - messagesEl.clientHeight - messagesEl.scrollTop;
+  if (force || distanceFromBottom < 120) {
+    requestAnimationFrame(() => {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    });
+  }
+}
+
 const STORAGE_KEY = 'aladdinChatParticipantState';
 
 const statusIcon = {
@@ -168,6 +178,7 @@ socket.on('chat-history', ({ messages, pauseAi: initialPauseAi, interjectActive:
   }
 
   refreshMessageVisibility();
+  scrollMessagesToBottom(true);
   markVisibleAsRead();
 });
 
@@ -179,6 +190,7 @@ socket.on('message-new', (message) => {
   messageState.set(message.id, message);
   renderMessage(message);
   refreshMessageVisibility();
+  scrollMessagesToBottom(true);
   markVisibleAsRead();
 });
 
@@ -310,7 +322,6 @@ function renderMessage(message) {
   `;
 
   messagesEl.appendChild(wrapper);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
 function updateStatus(messageId, status) {
