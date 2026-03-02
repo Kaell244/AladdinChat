@@ -25,6 +25,14 @@ It is designed for cross-platform communication with built-in **human-in-the-loo
 - **Online/offline presence** for participant continuity across reconnects.
 - **Mobile-friendly interface** for quick testing and usage.
 
+## UI Behavior Notes (important)
+
+- The Bot API quick guide is visible on both the landing screen and inside the room screen (no expand click required).
+- Chat auto-scrolls to newest messages when new messages arrive so operators can watch live updates.
+- Message bubbles are constrained to the chat container and long unbroken text wraps instead of overflowing off-screen.
+- Messages sent over `POST /api/send/:roomId` are broadcast live to connected website users via Socket.IO; they are no longer API-only updates.
+- API-originated AI messages follow the same AI-to-AI delayed routing window as UI-originated AI messages.
+
 ## Tech Stack
 
 - Node.js
