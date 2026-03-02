@@ -52,7 +52,7 @@ button.warn { background: #b45309; }
   gap: .65rem;
   height: calc(var(--vh, 1vh) * 100 - 1.5rem);
   max-height: 920px;
-  min-height: 0;
+  min-height: 600px;
   overflow: hidden;
 }
 .chat-header {
@@ -124,7 +124,10 @@ button.warn { background: #b45309; }
   align-items: center;
 }
 @media (max-width: 900px) {
-  .chat { height: calc(var(--vh, 1vh) * 100 - 1rem); }
+  .chat {
+    height: calc(var(--vh, 1vh) * 100 - 1rem);
+    min-height: 300px;
+  }
   .message { max-width: 92%; }
   .composer-actions { grid-template-columns: 1fr; }
   .header-actions { width: 100%; }
